@@ -1,26 +1,40 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import usersFromServer from '../api/users.json';
 import { getUserById } from '../services/user';
 import type { Post } from '../types/Post';
 
 type Props = {
-	onSubmit: (post: Post) => void
+	onSubmit: (post: Post) => void;
+	onReset?: () => void;
+	post?: Post;
 }
 
-export const PostForm: React.FC<Props> = ({ onSubmit }) => {
-	// #region state
-	const [title, setTitle] = useState('');
+export const PostForm: React.FC<Props> = ({
+	onSubmit,
+	post,
+	onReset = () => {
+	},
+}) => {
+	const titleField = useRef<HTMLInputElement | null>(null);
+	useEffect(() => {
+		if (titleField.current && post) {
+			titleField.current.focus();
+		}
+	}, [post?.id]);
+
+	//region UseStates
+	const [title, setTitle] = useState(post?.title || '');
 	const [hasTitleError, setHasTitleError] = useState(false);
 
-	const [userId, setUserId] = useState(0);
+	const [userId, setUserId] = useState(post?.userId || 0);
 	const [hasUserIdError, setHasUserIdError] = useState(false);
 
-	const [body, setBody] = useState('');
+	const [body, setBody] = useState(post?.body || '');
 	const [bodyErrorMessage, setBodyErrorMessage] = useState('');
+	//endregion
 
-	// #region change handlers
-
+	//region HandlesChanges
 	const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setTitle(event.target.value);
 		setHasTitleError(false);
@@ -53,7 +67,7 @@ export const PostForm: React.FC<Props> = ({ onSubmit }) => {
 		}
 
 		onSubmit({
-			id: 0,
+			id: post?.id || 0,
 			title,
 			body,
 			userId,
@@ -62,6 +76,7 @@ export const PostForm: React.FC<Props> = ({ onSubmit }) => {
 
 		reset();
 	};
+	//endregion
 
 	const reset = () => {
 		setTitle('');
@@ -71,6 +86,8 @@ export const PostForm: React.FC<Props> = ({ onSubmit }) => {
 		setHasTitleError(false);
 		setHasUserIdError(false);
 		setBodyErrorMessage('');
+
+		onReset();
 	};
 
 	return (
@@ -91,6 +108,7 @@ export const PostForm: React.FC<Props> = ({ onSubmit }) => {
 				>
 					<input
 						id="post-title"
+						ref={titleField}
 						className={classNames('input', {
 							'is-danger': hasTitleError,
 						})}
