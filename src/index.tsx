@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import '@fortawesome/fontawesome-free/css/all.css';
+import 'bulma';
 import './index.scss';
 import { App } from './App';
-import { GlobalStateProvider } from './components/Store';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(
@@ -11,9 +12,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
 	<React.StrictMode >
-		<GlobalStateProvider>
 			<App />
-		</GlobalStateProvider>
 	</React.StrictMode >,
 );
 
