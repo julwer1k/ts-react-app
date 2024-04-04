@@ -20,6 +20,7 @@ export const PostForm: React.FC<Props> = ({
 	users=[],
 }) => {
 	// #region state
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [title, setTitle] = useState(post?.title || '');
 	const [hasTitleError, setHasTitleError] = useState(false);
 
@@ -65,8 +66,10 @@ export const PostForm: React.FC<Props> = ({
 
 		const id = post?.id || 0;
 
+		setIsSubmitting(true);
 		onSubmit({ id, title, body, userId })
 			.then(reset)
+			.finally(() => setIsSubmitting(false))
 	};
 	// #region reset
 	const reset = () => {
@@ -181,11 +184,13 @@ export const PostForm: React.FC<Props> = ({
 			</div>
 
 			<div className="buttons">
-				<button type="submit" className="button is-link">
+				<button type="submit" className={classNames("button is-link", {
+					'is-loading': isSubmitting,
+				})}>
 					{post ? 'Save' : 'Create'}
 				</button>
 
-				<button type="reset" className="button is-link is-light">
+				<button type="reset" className="button is-link is-light" disabled={isSubmitting}>
 					Cancel
 				</button>
 			</div>

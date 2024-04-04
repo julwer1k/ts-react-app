@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 import { User, Post } from '../types';
 import * as postService from '../services/post';
 import { getUsers } from '../services/user';
@@ -19,7 +18,19 @@ export const UserPosts: React.FC<Props> = ({ userId }) => {
 	const [users, setUsers] = useState<User[]>([]);
 
 	useEffect(() => {
-		getUsers().then(setUsers);
+		getUsers()
+			.then(users => {
+				if (users) {
+					setUsers(users);
+				} else {
+					throw new Error('No users found');
+				}
+			})
+			.catch(error => {
+				setErrorMessage(error.message);
+				throw error;
+			})
+			.finally(() => {})
 	}, []);
 
 	useEffect(loadPosts, [userId]);
@@ -38,23 +49,32 @@ export const UserPosts: React.FC<Props> = ({ userId }) => {
 	const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
 	function deletePost(postId: number) {
-		postService.deletePost(postId);
 		setPosts(currentPosts => currentPosts.filter(post => post.id !== postId));
+
+		return postService.deletePost(postId)
+			.catch(error => {
+				setPosts(posts);
+				setErrorMessage('Error deleting post');
+				throw error;
+			});
+
 	}
 
 	function addPost(post: Post) {
+		setErrorMessage('');
 		return postService.createPost(post)
 			.then(newPost => {
 					setPosts(currentPosts => [...currentPosts, newPost]);
 				},
 			)
 			.catch((error) => {
-				setErrorMessage('Can`t create a post')
-				throw error
+				setErrorMessage('Can`t create a post');
+				throw error;
 			});
 	}
 
 	function updatePost(updatedPost: Post) {
+		setErrorMessage('');
 		return postService.updatePost(updatedPost)
 			.then(post => {
 					setPosts(currentPosts => {
@@ -67,7 +87,11 @@ export const UserPosts: React.FC<Props> = ({ userId }) => {
 						return newPosts;
 					});
 				},
-			);
+			)
+			.catch((error) => {
+				setErrorMessage('Can`t update a post');
+				throw error;
+			});
 	}
 
 	// #endregion

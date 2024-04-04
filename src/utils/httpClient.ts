@@ -20,7 +20,7 @@ export const client = {
 		const options = {
 			method: 'POST',
 			body: JSON.stringify(data),
-			DEFAULT_HEADERS,
+			headers: DEFAULT_HEADERS,
 		};
 
 		return fetch(BASE_URL + url, options)
@@ -30,7 +30,7 @@ export const client = {
 		const options = {
 			method: 'PATCH',
 			body: JSON.stringify(data),
-			DEFAULT_HEADERS,
+			headers: DEFAULT_HEADERS,
 		};
 
 		return fetch(BASE_URL + url, options)
