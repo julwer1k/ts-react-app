@@ -1,7 +1,7 @@
-import usersFromServer from '../api/users.json';
-import type { User } from '../types/User';
+import { User } from '../types';
+import { client } from '../utils/httpClient';
 
-export function getUserById(userId: number): User | null {
-	return usersFromServer.find(user => user.id === userId)
-		|| null;
+export function getUsers() {
+	return client.get<User[]>('/users')
+		.then(users => users.slice(0, 11))
 }
