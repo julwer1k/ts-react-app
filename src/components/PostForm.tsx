@@ -12,8 +12,8 @@ type Props = {
   users: User[];
 };
 
-export const PostForm: React.FC<Props> = ({ 
-  onSubmit, 
+export const PostForm: React.FC<Props> = ({
+  onSubmit,
   onReset = () => {},
   post,
   fixedUserId = 0,
@@ -27,7 +27,7 @@ export const PostForm: React.FC<Props> = ({
 
   const [userId, setUserId] = useState(post?.userId || fixedUserId);
   const [hasUserIdError, setHasUserIdError] = useState(false);
-  
+
   const [body, setBody] = useState(post?.body || '');
   const [bodyErrorMessage, setBodyErrorMessage] = useState('');
   // #endregion
@@ -89,7 +89,7 @@ export const PostForm: React.FC<Props> = ({
 
   return (
     <form
-      action="/api/posts" 
+      action="/api/posts"
       method="POST"
       onSubmit={handleSubmit}
       onReset={reset}
@@ -106,9 +106,9 @@ export const PostForm: React.FC<Props> = ({
             id="post-title"
             className={classNames('input', {
               'is-danger': hasTitleError
-            })} 
-            type="text" 
-            placeholder="Enter title" 
+            })}
+            type="text"
+            placeholder="Enter title"
             value={title}
             onChange={handleTitleChange}
           />
@@ -166,10 +166,10 @@ export const PostForm: React.FC<Props> = ({
         </label>
 
         <div className="control">
-          <textarea 
+          <textarea
             className={classNames('textarea', {
               'is-danger': bodyErrorMessage,
-            })} 
+            })}
             placeholder="At least 5 characters"
             value={body}
             onChange={handleBodyChange}
@@ -183,7 +183,7 @@ export const PostForm: React.FC<Props> = ({
 
       <div className="buttons">
         <button
-          type="submit" 
+          type="submit"
           className={classNames('button is-link', {
             'is-loading': isSubmitting,
           })}
@@ -191,8 +191,8 @@ export const PostForm: React.FC<Props> = ({
           {post ? 'Save' : 'Create'}
         </button>
 
-        <button 
-          type="reset" 
+        <button
+          type="reset"
           className="button is-link is-light"
           disabled={isSubmitting}
         >

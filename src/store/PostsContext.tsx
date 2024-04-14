@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Post } from '../types';
 import * as postService from '../services/post';
 
@@ -21,6 +21,10 @@ export const PostsProvider: React.FC<Props> = ({ children }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    loadPosts(0);
+  }, []);
 
   const loadPosts = useCallback((userId = 0) => {
     setLoading(true);
@@ -70,9 +74,9 @@ export const PostsProvider: React.FC<Props> = ({ children }) => {
         setPosts(currentPosts => {
           const newPosts = [...currentPosts];
           const index = newPosts.findIndex(post => post.id === updatedPost.id);
-    
+
           newPosts.splice(index, 1, post);
-    
+
           return newPosts;
         });
       })

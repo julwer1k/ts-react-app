@@ -1,50 +1,26 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useEffect } from 'react';
-import { Link, Outlet, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
 
 import { PostList } from '../components/PostList';
-import { Loader } from '../components/Loader';
 import { PostsContext } from '../store/PostsContext';
+import { PostFilter } from '../components/PostFilter';
 
 export const PostsPage: React.FC = () => {
-	const { posts, loading, errorMessage, loadPosts } = useContext(PostsContext);
-	const { userId } = useParams();
-	const selectedUserId = userId ? +userId : 0;
-
-	useEffect(() => {
-		loadPosts(selectedUserId);
-	}, [selectedUserId]);
-
-	if (loading) {
-		return <Loader />;
-	}
+	const { posts } = useContext(PostsContext);
+	const visiblePosts = posts;
 
 	return (
-		<div className="">
-			{selectedUserId !== 0 && (
-				<Link to='..'>Back</Link>
-			)}
-
-			<h1 className="title">Posts</h1>
-
-			{posts.length > 0 ? (
-				<PostList posts={posts} />
-			) : (
+		<div>
+			{posts.length > 0 ? <>
+				<PostFilter />
+				<PostList posts={visiblePosts} />
+			</> : (
 				<p>There are no posts yet</p>
 			)}
 
-			<Link
-				to="new"
-				className="button is-info"
-			>
+			<Link to="new" className="button is-info">
 				Create a post
 			</Link>
-
-			{errorMessage && (
-				<p className="notification is-danger">{errorMessage}</p>
-			)}
-
-			<Outlet />
 		</div>
 	);
 };

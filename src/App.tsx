@@ -1,23 +1,23 @@
+import { Link, Outlet, NavLink, useParams, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
-import React from 'react';
-import { Link, Outlet, NavLink, useParams } from 'react-router-dom';
 
-const getLinkClass = ({ isActive }: {
+// #region isActive
+interface Options {
 	isActive: boolean
-}) => classNames('navbar-item', {
+}
+
+const getLinkClass = ({ isActive }: Options) => classNames('navbar-item', {
 	'is-active': isActive,
 });
 
-const getLinkStyle = ({ isActive }: {
-	isActive: boolean
-}) => ({
-	color: isActive
-		? 'red'
-		: '',
+const getLinkStyle = ({ isActive }: Options) => ({
+	color: isActive ? 'red' : '',
 });
+// #endregion
 
 export const App = () => {
-	const {userId} = useParams();
+	const { userId } = useParams();
+	const { pathname, search } = useLocation();
 
 	return <>
 		<nav className="navbar is-light px-3">
@@ -42,13 +42,20 @@ export const App = () => {
 					<NavLink to={`/users/${userId}/posts`} className={getLinkClass} style={getLinkStyle}>
 						User {userId} Posts
 					</NavLink>
-
 				)}
 			</div>
 		</nav>
 
 		<div className="section">
+			<p className="title is-5 has-text-info">
+				{pathname}
+			</p>
+
+			<p className="title is-6">
+				{search && search.replaceAll('&', ' &')}
+			</p>
+
 			<Outlet />
 		</div>
 	</>;
-};
+}
